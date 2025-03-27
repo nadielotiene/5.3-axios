@@ -25,6 +25,26 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/", async (req, res) => {
+
+app.post("/filter-random", async (req, res) => {
+  const { type, participants } = req.query;
+
+  try {
+    const response = await axios.get("https://bored-api.appbrewery.com/filter", {
+      params: { type, participants },
+    });
+    const filteredActivities = response.data;
+
+    if (!filteredActivities || filteredActivities.length === 0) {
+      throw new Error("No activities that match your criteria.")
+    }
+  } catch(error) {
+    console.error("Error fetching activities: ", error.message);
+
+    res.status(500).json({ error: "Failed to fetch activities. Please try again." });
+  }
+});
+
   console.log(req.body);
 
   // Step 2: Play around with the drop downs and see what gets logged.
